@@ -35,3 +35,7 @@ docker.n8n.io/n8nio/n8n
 ```bash
 openssl req -x509 -newkey rsa:4096 -keyout privkey.pem -out cert.pem -sha256 -days 365 -nodes -subj "/CN=localhost"
 ```
+
+## TODO
+- [ ] Use openweb ui for chat interface
+- [ ] Create other tools: get user message, find expert -> get techno messages
