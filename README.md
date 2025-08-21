@@ -5,6 +5,7 @@ This project is based on [Foxy context - streamable http](https://github.com/str
 ## Prerequisite 
 - go 
 - n8n
+- create the .env with the correct slack token (ask @Alexis, see .env.example)
 
 ## Start
 - to start the project:
