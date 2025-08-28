@@ -30,14 +30,15 @@ func main() {
 	server := app.
 	NewBuilder().
 	// adding the tool to the app
-	WithTool(func() fxctx.Tool { return slack.NewFindTechExpertTool(slackService) }).
+	WithTool(func() fxctx.Tool { return slack.NewFindTechnologyPost(slackService) }).
+	WithTool(func() fxctx.Tool { return slack.NewGetConceptUserDetails(slackService) }).
 	WithServerCapabilities(&mcp.ServerCapabilities{
 		Tools: &mcp.ServerCapabilitiesTools{
 			ListChanged: utils.Ptr(false),
 		},
 	}).
 	// setting up server
-	WithName("great-tool-server").
+	WithName("concept-insight-server").
 	WithVersion("0.0.1").
 	WithTransport(
 		streamable_http.NewTransport(

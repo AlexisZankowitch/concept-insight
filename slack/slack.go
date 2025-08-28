@@ -14,8 +14,8 @@ type SlackService struct {
 
 type MessageInfo struct {
 	Message string
-	Author string
-	Author_slack_id string
+	Slack_Author_Name string
+	Slack_id string
 	Posted string
 }
 
@@ -49,20 +49,56 @@ func (s *SlackService) GetTechonologyPost(tech string, channel string) ([]Messag
 	for _, match := range searchResult.Matches {
 		// Access the individual message fields.
 		// For example, the message's text, the user who sent it, and the timestamp.
-		fmt.Printf("Message Text: %s\n", match.Text)
-		fmt.Printf("Sent by User ID: %s\n", match.User)
-		fmt.Printf("Timestamp: %s\n", match.Timestamp)
-		fmt.Printf("Username: %s\n", match.Username)
-		fmt.Println("--------------------")
-		fmt.Println("")
+		// fmt.Printf("Message Text: %s\n", match.Text)
+		// fmt.Printf("Sent by User ID: %s\n", match.User)
+		// fmt.Printf("Timestamp: %s\n", match.Timestamp)
+		// fmt.Printf("Username: %s\n", match.Username)
+		// fmt.Println("--------------------")
+		// fmt.Println("")
 
 		results = append(results, MessageInfo{
 			Message: match.Text,
-			Author: match.Username,
-			Author_slack_id: match.User,
+			Slack_Author_Name: match.Username,
+			Slack_id: match.User,
 			Posted: match.Timestamp,
 		})
 	}
+
+	return results, nil
+}
+
+type ConceptUser struct {
+	Slack_id string
+	Slack_Name string
+	Real_Name string
+	// Email is not present in profile actually 
+	// Email string
+}
+
+func (s *SlackService) ListUsers() ([]ConceptUser, error){
+	users, err := s.client.GetUsers()
+	if err != nil {
+		fmt.Printf("error %v \n", err)
+		return nil, err
+	}
+
+	results := []ConceptUser{}
+	for _, user := range users {
+		if !user.Deleted {
+			results = append(results, ConceptUser{
+				Slack_id: user.ID,
+				Slack_Name: user.Name,
+				Real_Name: user.Profile.RealName,
+				// Email: user.Profile.Email,
+			})
+		} 
+	}
+
+	return results, nil
+}
+
+func (s *SlackService) GetPostByUser(user string) ([]MessageInfo, error) {
+	results := []MessageInfo{}
 
 	return results, nil
 }
