@@ -10,6 +10,59 @@ import (
 	"github.com/strowk/foxy-contexts/pkg/mcp"
 )
 
+
+func NewGetLastestPostsByUserId(slack *SlackService) fxctx.Tool {
+	return fxctx.NewTool(
+		&mcp.Tool{
+			Name: "Get the latest 200 posts by slack user id",
+			Description: utils.Ptr("Retrieve the lastest 200 posts of a user ifentified by its slack user id"),
+			InputSchema: mcp.ToolInputSchema{
+				Type: "object",
+				Properties: map[string]map[string]interface{}{
+					"slack_user_id": {
+						"type": "string",
+						"description": "slack user id of the user we want to list the post from",
+					},
+				},
+				Required: []string{"slack_user_id"},
+			},
+		},
+		func(ctx context.Context, args map[string]interface{}) *mcp.CallToolResult {
+			slackUserId, ok := args["slack_user_id"].(string)
+			if !ok || slackUserId == "" {
+				return &mcp.CallToolResult{
+					IsError: utils.Ptr(true),
+					Content: []interface{}{
+						mcp.TextContent{
+							Type: "text",
+							Text: "Error: slack user id is required and must be a string",
+						},
+					},
+				}
+			}
+
+			posts, err := slack.GetPostByUser(slackUserId)
+			if err != nil {
+				return &mcp.CallToolResult{
+					IsError: utils.Ptr(true),
+					Content: []interface{}{
+						mcp.TextContent{
+							Type: "text",
+							Text: fmt.Sprintf("Error fetching user's post: %v", err),
+						},
+					},
+				}	
+			}
+
+			return &mcp.CallToolResult{
+				IsError: utils.Ptr(false),
+				Content: []interface{}{
+					posts,
+				},
+			}
+		},
+	)
+}			
 func NewGetConceptUserDetails(slack *SlackService) fxctx.Tool {
 
 	return fxctx.NewTool(
@@ -153,49 +206,6 @@ func NewFindTechnologyPost(slackService *SlackService) fxctx.Tool {
 				}
 			}
 
-			// // Build response content
-			// var contentParts []interface{}
-			//
-			// // Add summary
-			// contentParts = append(contentParts, mcp.TextContent{
-			// 	Type: "text",
-			// 	Text: fmt.Sprintf("Found %d messages tagged with '%s' across channels 'concept-tech' and 'today-I-learned':", len(allMessages), tech),
-			// })
-			//
-			// // If we have search errors but some results, mention them
-			// if len(searchErrors) > 0 {
-			// 	contentParts = append(contentParts, mcp.TextContent{
-			// 		Type: contentParts"text",
-			// 		Text: fmt.Sprintf("Note: Some searches had errors: %s", strings.Join(searchErrors, "; ")),
-			// 	})
-			// }
-
-			// Add message details for LLM analysis
-			// if len(allMessages) > 0 {
-			// 	contentParts = append(contentParts, mcp.TextContent{
-			// 		Type: "text",
-			// 		Text: "Message details for expert analysis:",
-			// 	})
-			//
-			// 	for i, msg := range allMessages {
-			// 		contentParts = append(contentParts, mcp.TextContent{
-			// 			Type: "text",
-			// 			Text: fmt.Sprintf("Message %d:\n- Author: %s (ID: %s)\n- Posted: %s\n- Content: %s\n",
-			// 				i+1, msg.Slack_Author_Name, msg.Slack_id, msg.Posted, msg.Message),
-			// 		})
-			// 	}
-			//
-			// 	// Add analysis prompt for the LLM
-			// 	contentParts = append(contentParts, mcp.TextContent{
-			// 		Type: "text",
-			// 		Text: fmt.Sprintf("Based on these messages about '%s', please analyze:\n1. Who appears to be the most knowledgeable experts?\n2. Who would you recommend contacting for questions about %s?", tech, tech),
-			// 	})
-			// } else {
-			// 	contentParts = append(contentParts, mcp.TextContent{
-			// 		Type: "text",
-			// 		Text: fmt.Sprintf("No messages found tagged with '%s' in the searched channels.", tech),
-			// 	})
-			// }
 
 			return &mcp.CallToolResult{
 				Content: []interface{}{

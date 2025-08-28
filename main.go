@@ -32,6 +32,7 @@ func main() {
 	// adding the tool to the app
 	WithTool(func() fxctx.Tool { return slack.NewFindTechnologyPost(slackService) }).
 	WithTool(func() fxctx.Tool { return slack.NewGetConceptUserDetails(slackService) }).
+	WithTool(func() fxctx.Tool { return slack.NewGetLastestPostsByUserId(slackService) }).
 	WithServerCapabilities(&mcp.ServerCapabilities{
 		Tools: &mcp.ServerCapabilitiesTools{
 			ListChanged: utils.Ptr(false),

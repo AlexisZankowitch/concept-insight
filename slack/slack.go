@@ -97,8 +97,32 @@ func (s *SlackService) ListUsers() ([]ConceptUser, error){
 	return results, nil
 }
 
-func (s *SlackService) GetPostByUser(user string) ([]MessageInfo, error) {
+func (s *SlackService) GetPostByUser(userId string) ([]MessageInfo, error) {
 	results := []MessageInfo{}
 
+	params := slack.SearchParameters{
+		Sort:          "timestamp",
+		SortDirection: "desc",
+		Highlight:     false,
+		Count:         100,
+		Page:          1,
+	}
+	search := fmt.Sprintf("from:%s in:#concept-tech in:#today-i-learned", userId)
+	searchResults, err := s.client.SearchMessages(search, params)
+	if err != nil {
+		fmt.Printf("Error %v", err)
+		return nil, err
+	}
+
+	for _, matche := range searchResults.Matches {
+		results = append(results, MessageInfo{
+			Message: matche.Text,
+			Slack_Author_Name: matche.Username,
+			Slack_id: matche.User,
+			Posted: matche.Timestamp,
+		})
+	}
+
+	fmt.Printf("Results get post by user %v", results)
 	return results, nil
 }
