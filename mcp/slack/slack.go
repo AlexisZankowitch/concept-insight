@@ -17,6 +17,7 @@ type MessageInfo struct {
 	Slack_Author_Name string
 	Slack_id string
 	Posted string
+	Permalink string
 }
 
 // NewSlackService creates a new Slack service
@@ -61,6 +62,7 @@ func (s *SlackService) GetTechonologyPost(tech string, channel string) ([]Messag
 			Slack_Author_Name: match.Username,
 			Slack_id: match.User,
 			Posted: match.Timestamp,
+			Permalink: match.Permalink,
 		})
 	}
 

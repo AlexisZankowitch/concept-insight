@@ -4,7 +4,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/AlexisZankowitch/concept-insight/slack"
+	"github.com/AlexisZankowitch/concept-insight/mcp/slack"
 	"github.com/AlexisZankowitch/concept-insight/utils"
 	"github.com/strowk/foxy-contexts/pkg/app"
 	"github.com/strowk/foxy-contexts/pkg/fxctx"

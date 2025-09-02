@@ -28,6 +28,7 @@ func NewGetLastestPostsByUserId(slack *SlackService) fxctx.Tool {
 			},
 		},
 		func(ctx context.Context, args map[string]interface{}) *mcp.CallToolResult {
+			fmt.Println("Received a get latest post by user id command")
 			slackUserId, ok := args["slack_user_id"].(string)
 			if !ok || slackUserId == "" {
 				return &mcp.CallToolResult{
@@ -82,6 +83,7 @@ func NewGetConceptUserDetails(slack *SlackService) fxctx.Tool {
 		},
 
 		func(ctx context.Context, args map[string]interface{}) *mcp.CallToolResult {
+			fmt.Println("Received a Get Concept User details command")
 			search, ok := args["search"].(string)
 			if !ok || search == "" {
 				return &mcp.CallToolResult{
@@ -165,6 +167,7 @@ func NewFindTechnologyPost(slackService *SlackService) fxctx.Tool {
 
 		// Tool execution callback
 		func(ctx context.Context, args map[string]interface{}) *mcp.CallToolResult {
+			fmt.Println("Received a Find technology post command")
 			// Extract technology from arguments
 			tech, ok := args["technology"].(string)
 			if !ok || tech == "" {
